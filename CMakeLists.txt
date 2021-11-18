@@ -15,6 +15,7 @@ find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
 
 set(TS_FILES PAP_en_GB.ts)
+set(DIST_FILES README.md LICENSE)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -22,6 +23,7 @@ set(PROJECT_SOURCES
         Player.h
         Player.ui
         ${TS_FILES}
+        ${DIST_FILES}
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

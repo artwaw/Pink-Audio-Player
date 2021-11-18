@@ -11,8 +11,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 COMPONENTS Widgets LinguistTools REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
+find_package(QT NAMES Qt6 COMPONENTS Widgets Gui Multimedia Sql LinguistTools REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Gui Multimedia Sql LinguistTools REQUIRED)
 
 set(TS_FILES
     PAP_en_GB.ts
@@ -40,6 +40,9 @@ qt_add_executable(PAP
 qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
 target_link_libraries(PAP PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(PAP PRIVATE Qt${QT_VERSION_MAJOR}::Gui)
+target_link_libraries(PAP PRIVATE Qt${QT_VERSION_MAJOR}::Multimedia)
+target_link_libraries(PAP PRIVATE Qt${QT_VERSION_MAJOR}::Sql)
 
 set_target_properties(PAP PROPERTIES
     MACOSX_BUNDLE TRUE

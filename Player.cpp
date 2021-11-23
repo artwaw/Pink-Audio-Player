@@ -172,6 +172,17 @@ void Player::initActions() {
     helpIndex->setShortcut(QKeySequence::HelpContents);
     connect(helpIndex,&QAction::triggered,this,&Player::doHelp);
     helpMenu->addAction(helpIndex);
+    columnContextMenu = new QMenu(this);
+    for (auto x=0;x<16;++x) {
+        QAction *action = new QAction(this);
+        action->setCheckable(true);
+        columnContextMenu->addAction(action);
+        connect(action,&QAction::triggered,this,&Player::playlistColumnVisibilityChanged);
+    }
+    columnContextMenu->addSeparator();
+    QAction *action = new QAction(tr("Reset"),this);
+    connect(action,&QAction::triggered,this,&Player::restorePlaylistColumns);
+    columnContextMenu->addAction(action);
 }
 
 void Player::setLanguage(const QString &lang) {
@@ -245,6 +256,8 @@ void Player::decoratePlaylist(QTableView *view) {
     }
     settings.endArray();
     settings.endGroup();
+    view->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(view->horizontalHeader(),&QHeaderView::customContextMenuRequested,this,&Player::columnContextMenuRequested);
 }
 
 void Player::doFileOpen() {
@@ -307,6 +320,70 @@ void Player::doHelp() {
 
 }
 
+void Player::columnContextMenuRequested(const QPoint &point) {
+    QSettings settings;
+    settings.beginGroup("playlists");
+    settings.beginReadArray("visibility");
+    for (auto x=1;x<17;++x) {
+        settings.setArrayIndex(x);
+        columnContextMenu->actions().at(x-1)->setChecked(settings.value("v").toBool());
+    }
+    settings.endArray(); settings.endGroup();
+    const QStringList titles = playlists.getColumnNames();
+    for (auto x=0;x<titles.size();++x) {
+        columnContextMenu->actions().at(x)->setText(titles.at(x));
+    }
+    columnContextMenu->popup(ui->playlistView->currentWidget()->mapToGlobal(point));
+}
+
+void Player::restorePlaylistColumns() {
+    QSettings settings;
+    settings.beginGroup("playlists");
+    settings.beginWriteArray("visibility",19);
+    settings.setArrayIndex(0); settings.setValue("v",false);
+    for (auto y=1;y<17;++y) {
+        settings.setArrayIndex(y); settings.setValue("v",true);
+    }
+    settings.setArrayIndex(17); settings.setValue("v",false);
+    settings.setArrayIndex(18); settings.setValue("v",false);
+    settings.setArrayIndex(19); settings.setValue("v",false);
+    settings.endArray();
+    settings.endGroup();
+    settings.sync();
+    setPlaylistColumnVisibility();
+}
+
+void Player::playlistColumnVisibilityChanged() {
+    QSettings settings;
+    settings.beginGroup("playlists");
+    settings.beginWriteArray("visibility");
+    settings.setArrayIndex(0); settings.setValue("v",false);
+    for (auto x=1;x<17;++x) {
+        settings.setArrayIndex(x);
+        settings.setValue("v",columnContextMenu->actions().at(x-1)->isChecked());
+    }
+    settings.setArrayIndex(17); settings.setValue("v",false);
+    settings.setArrayIndex(18); settings.setValue("v",false);
+    settings.setArrayIndex(19); settings.setValue("v",false);
+    settings.endArray(); settings.sync(); settings.endGroup();
+    setPlaylistColumnVisibility();
+}
+
+void Player::setPlaylistColumnVisibility() {
+    QSettings settings; settings.beginGroup("playlists");
+    settings.beginReadArray("visibility");
+    for (auto x=0;x<ui->playlistView->count();++x) {
+        QTableView *page = ui->playlistView->widget(x)->findChild<QTableView*>();
+        if (!page) { qDebug() << "findChild failed"; return; }
+        for (auto y=0;y<20;++y) {
+            settings.setArrayIndex(y);
+            page->setColumnHidden(y,!settings.value("v").toBool());
+        }
+    }
+    settings.endArray();
+    settings.endGroup();
+}
+
 void Player::closeEvent(QCloseEvent *event) {
     Q_UNUSED(event)
     QSettings settings;
@@ -321,6 +398,7 @@ void Player::changeEvent(QEvent *e) {
     switch (e->type()) {
     case QEvent::LanguageChange:
         ui->retranslateUi(this);
+        playlists.retranslateHeaders();
         break;
     default:
         break;

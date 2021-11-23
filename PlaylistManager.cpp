@@ -113,6 +113,14 @@ bool PlaylistManager::rename(const QString &oldName, const QString &newName) {
     return res;
 }
 
+QStringList PlaylistManager::getColumnNames() const {
+    QStringList res;
+    for (auto x=1;x<17;++x) {
+        res.append(playlistModel->headerData(x,Qt::Horizontal).toString());
+    }
+    return res;
+}
+
 void PlaylistManager::setupHeaders() {
     playlistModel->setHeaderData(1,Qt::Horizontal,tr("Title"));
     playlistModel->setHeaderData(2,Qt::Horizontal,tr("Artist"));

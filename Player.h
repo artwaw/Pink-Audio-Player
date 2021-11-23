@@ -65,6 +65,8 @@ private:
     //menu help
     QAction *helpAbout;
     QAction *helpIndex;
+    //context menus
+    QMenu *columnContextMenu;
 
     QTranslator qtTranslator;
     QTranslator myTranslator;
@@ -91,6 +93,10 @@ private slots:
     void updateLibrary();
     void doAbout();
     void doHelp();
+    void columnContextMenuRequested(const QPoint &point);
+    void restorePlaylistColumns();
+    void playlistColumnVisibilityChanged();
+    void setPlaylistColumnVisibility();
 
 protected:
     void closeEvent(QCloseEvent *event) override;

@@ -23,6 +23,7 @@ public:
     QStringList getAll() const;
     void retranslateHeaders();
     bool rename(const QString &oldName, const QString &newName);
+    QStringList getColumnNames() const;
 
 private:
     QList<QSortFilterProxyModel*> mPlaylists;

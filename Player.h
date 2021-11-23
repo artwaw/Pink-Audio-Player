@@ -4,7 +4,10 @@
 #include <QMainWindow>
 #include <QActionGroup>
 #include <QTranslator>
-#include <QSettings>
+#include <QMessageBox>
+#include <QTableView>
+
+#include "PlaylistManager.h"
 
 QT_BEGIN_NAMESPACE
     namespace Ui { class Player; }
@@ -65,9 +68,12 @@ private:
 
     QTranslator qtTranslator;
     QTranslator myTranslator;
+    PlaylistManager playlists;
 
     void initActions();
     void setLanguage(const QString &lang);
+    void restorePlaylists();
+    void decoratePlaylist(QTableView *view);
 
 private slots:
     void doFileOpen();

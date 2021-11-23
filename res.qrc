@@ -10,5 +10,8 @@
         <file>i18n/qtbase_de.qm</file>
         <file>i18n/qtbase_en.qm</file>
         <file>i18n/qtbase_pl.qm</file>
+        <file>img/stop-512.png</file>
+        <file>img/volume-up-4-512.png</file>
+        <file>img/mute-2-512.png</file>
     </qresource>
 </RCC>

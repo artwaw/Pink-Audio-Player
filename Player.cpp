@@ -19,6 +19,7 @@ Player::Player(QWidget *parent)
     restoreGeometry(settings.value("geo").toByteArray());
     restoreState(settings.value("state").toByteArray());
     ui->splitter->restoreState(settings.value("splitter").toByteArray());
+    restorePlaylists();
 }
 
 Player::~Player()
@@ -92,6 +93,7 @@ void Player::initActions() {
     connect(prefs,&QAction::triggered,this,[=](){
 
     });
+    editMenu->addAction(prefs);
     QMenu *playMenu = ui->menubar->addMenu(tr("&Playback"));
     playNext = new QAction(tr("&Next"),this);
     playNext->setShortcut(QKeySequence::FindNext);
@@ -185,6 +187,64 @@ void Player::setLanguage(const QString &lang) {
     if (myTranslator.load("PAP_"+loc,":/i18n")) { qApp->installTranslator(&myTranslator); }
     settings.setValue("lang",loc);
     settings.sync();
+}
+
+void Player::restorePlaylists() {
+    QSortFilterProxyModel *model = playlists.retrieve(ui->playlistView->tabBar()->tabText(0));
+    if (!model) {
+        QMessageBox::critical(this,tr("Critical error"),tr("Default playlist can't be retrieved. This is a bug. Please contact the developer."));
+        close();
+        return;
+    }
+    ui->liveTable->setModel(model);
+    decoratePlaylist(ui->liveTable);
+    QSettings settings;
+    settings.beginGroup("playlists");
+    int index = settings.beginReadArray("playlists");
+    for (auto x=0;x<index;++x) {
+        settings.setArrayIndex(x);
+        QSortFilterProxyModel *model = playlists.retrieve(settings.value("Playlist").toString());
+        if (model) {
+            QWidget *widget = new QWidget();
+            QGridLayout *layout = new QGridLayout(widget);
+            layout->addWidget(widget);
+            QTableView *table = new QTableView(widget);
+            layout->addWidget(table);
+            table->setModel(model);
+            decoratePlaylist(table);
+            ui->playlistView->addTab(widget,settings.value("Playlist").toString());
+        }
+    }
+    settings.endArray();
+    ui->playlistView->setCurrentIndex(settings.value("playlist").toInt());
+    settings.endGroup();
+}
+
+void Player::decoratePlaylist(QTableView *view) {
+    if (!view||!view->model()) { return; }
+    QSettings settings;
+    settings.beginGroup("playlists");
+    int x = settings.beginReadArray("visibility");
+    if (x==0) {
+        settings.endArray();
+        settings.beginWriteArray("visibility",19);
+        settings.setArrayIndex(0); settings.setValue("v",false);
+        for (auto y=1;y<17;++y) {
+            settings.setArrayIndex(y); settings.setValue("v",true);
+        }
+        settings.setArrayIndex(17); settings.setValue("v",false);
+        settings.setArrayIndex(18); settings.setValue("v",false);
+        settings.setArrayIndex(19); settings.setValue("v",false);
+        settings.endArray();
+        settings.sync();
+        x = settings.beginReadArray("visibility");
+    }
+    for (auto index=0;index<x+1;++index) {
+        settings.setArrayIndex(index);
+        view->setColumnHidden(index,!settings.value("v").toBool());
+    }
+    settings.endArray();
+    settings.endGroup();
 }
 
 void Player::doFileOpen() {

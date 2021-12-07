@@ -6,8 +6,15 @@
 #include <QTranslator>
 #include <QMessageBox>
 #include <QTableView>
+#include <QInputDialog>
+#include <QFileDialog>
+#include <QMediaPlayer>
+#include <QAudioOutput>
+#include <QMediaMetaData>
 
 #include "PlaylistManager.h"
+#include "PlayingDelegate.h"
+#include "VMedia.h"
 
 QT_BEGIN_NAMESPACE
     namespace Ui { class Player; }
@@ -67,15 +74,25 @@ private:
     QAction *helpIndex;
     //context menus
     QMenu *columnContextMenu;
+    QMenu *tabBarContextMenu;
 
     QTranslator qtTranslator;
     QTranslator myTranslator;
     PlaylistManager playlists;
+    QMediaPlayer player;
+    QAudioOutput output;
+    QStringList extensions;
 
     void initActions();
     void setLanguage(const QString &lang);
     void restorePlaylists();
     void decoratePlaylist(QTableView *view);
+    void setPlaylistColumnVisibility();
+    QString getUniquePlaylistName(const QString &pname = QString()) const;
+    void writePlaylistNames();
+    bool playlistNameUsed(const QString &aname = QString()) const;
+    void setupPlayer();
+    QString currentPName() const;
 
 private slots:
     void doFileOpen();
@@ -85,6 +102,7 @@ private slots:
     void doNewPlaylist();
     void doOpenPlaylist();
     void doSavePlaylist();
+    void doClearPlaylist();
     void doSearch();
     void doRemoveDuplicates();
     void doKillTheDead();
@@ -96,7 +114,12 @@ private slots:
     void columnContextMenuRequested(const QPoint &point);
     void restorePlaylistColumns();
     void playlistColumnVisibilityChanged();
-    void setPlaylistColumnVisibility();
+    void playlistCloseRequested(int index);
+    void playlistChanged(int index);
+    void renameTab(int index);
+    void tabBarContextMenuRequested(const QPoint &point);
+    void mediaStatusChanged(QMediaPlayer::MediaStatus status);
+    void mediaPlaybackStatusChanged(QMediaPlayer::PlaybackState state);
 
 protected:
     void closeEvent(QCloseEvent *event) override;

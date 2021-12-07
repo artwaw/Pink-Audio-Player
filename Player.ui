@@ -481,14 +481,14 @@
          <item>
           <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="QLabel" name="label">
+            <widget class="QLabel" name="artistLabel">
              <property name="text">
               <string>Artist</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="label_2">
+            <widget class="QLabel" name="titleLabel">
              <property name="text">
               <string>Title</string>
              </property>

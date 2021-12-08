@@ -232,7 +232,7 @@ void Player::restorePlaylists() {
         return;
     }
     ui->liveTable->setModel(model);
-    ui->liveTable->setItemDelegateForColumn(0,new PlayingDelegate(this));
+    ui->liveTable->setShowGrid(false);
     ui->playlistView->setTabText(0,playlists.getLiveTitle());
     decoratePlaylist(ui->liveTable);
     if (all.size()>1) {
@@ -243,9 +243,9 @@ void Player::restorePlaylists() {
                 QGridLayout *layout = new QGridLayout(widget);
                 layout->setContentsMargins(3,3,3,3);
                 QTableView *table = new QTableView(widget);
-                table->setItemDelegateForColumn(0,new PlayingDelegate(this));
                 layout->addWidget(table);
                 table->setModel(model);
+                ui->liveTable->setShowGrid(false);
                 decoratePlaylist(table);
                 ui->playlistView->addTab(widget,all.at(x));
             }
@@ -253,6 +253,8 @@ void Player::restorePlaylists() {
     }
     //sorting them here
     ui->playlistView->setCurrentIndex(settings.value("playlistIndex",0).toInt());
+    currentlyPlaying.first = ui->playlistView->currentWidget()->findChild<QTableView*>();
+    currentlyPlaying.second = -1;
     settings.endGroup();
     connect(ui->playlistView->tabBar(),&QTabBar::tabBarDoubleClicked,this,&Player::renameTab);
     connect(ui->playlistView->tabBar(),&QTabBar::tabCloseRequested,this,&Player::playlistCloseRequested);
@@ -281,6 +283,8 @@ void Player::decoratePlaylist(QTableView *view) {
     }
     settings.endArray();
     settings.endGroup();
+    PlayingDelegate *delegate = new PlayingDelegate(this);
+    view->setItemDelegateForColumn(0,delegate);
     view->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(view->horizontalHeader(),&QHeaderView::customContextMenuRequested,this,&Player::columnContextMenuRequested);
 }
@@ -337,6 +341,7 @@ void Player::setupPlayer() {
     ui->volumeSlider->setValue(QAudio::convertVolume(output.volume(),QAudio::LinearVolumeScale,QAudio::LogarithmicVolumeScale)*100);
     ui->position->setTracking(false);
     connect(&player,&QMediaPlayer::playbackStateChanged,this,&Player::mediaPlaybackStatusChanged);
+    connect(&player,&QMediaPlayer::mediaStatusChanged,this,&Player::mediaStatusChanged);
     connect(&player,&QMediaPlayer::positionChanged,ui->position,&QSlider::setValue);
     connect(&player,&QMediaPlayer::positionChanged,this,[&](qint64 pos){
         QTime time(0,0,0);
@@ -349,9 +354,19 @@ void Player::setupPlayer() {
         ui->position->setRange(0,player.duration());
     });
     connect(ui->playBtn,&QPushButton::clicked,this,[&](){
-        if (player.playbackState()==QMediaPlayer::PausedState||player.playbackState()==QMediaPlayer::StoppedState) {
+        if (player.playbackState()==QMediaPlayer::PausedState) {
             player.play();
-        } else {
+            return;
+        }
+        if (player.playbackState()==QMediaPlayer::StoppedState) {
+            if (player.mediaStatus()==QMediaPlayer::LoadedMedia) {
+                player.play();
+            } else {
+                playNextTrack();
+            }
+            return;
+        }
+        if (player.playbackState()==QMediaPlayer::PlayingState) {
             player.pause();
         }
     });
@@ -377,6 +392,54 @@ QString Player::currentPName() const {
     return ui->playlistView->currentIndex()==0?QString():ui->playlistView->tabText(ui->playlistView->currentIndex());
 }
 
+int Player::nextTrack() const {
+    if (!currentlyPlaying.first) { return -1; }
+    if (playFollowsCursor->isChecked()) {
+        if (!currentlyPlaying.first->selectionModel()->hasSelection()) {
+            return -1;
+        }
+        return currentlyPlaying.first->selectionModel()->selectedIndexes().at(0).row();
+    }
+    if (ui->orderBox->currentIndex()==2) {
+        return -1;
+    }
+    if (ui->orderBox->currentIndex()==0) {
+        if (currentlyPlaying.second==currentlyPlaying.first->model()->rowCount()-1) {
+            return -1;
+        }
+        return currentlyPlaying.second+1;
+    }
+    if (ui->orderBox->currentIndex()==1) {
+        if (currentlyPlaying.second==currentlyPlaying.first->model()->rowCount()-1) {
+            return 0;
+        }
+        return currentlyPlaying.second+1;
+    }
+    if (ui->orderBox->currentIndex()==3) {
+        return currentlyPlaying.second;
+    }
+    if (ui->orderBox->currentIndex()==4) {
+        return QRandomGenerator::global()->bounded(currentlyPlaying.first->model()->rowCount());
+    }
+    return -1;
+}
+
+void Player::playNextTrack() {
+    int t_next = nextTrack();
+    if (t_next<0) { return; }
+    const QString file = currentlyPlaying.first->model()->data(currentlyPlaying.first->model()->index(t_next,9)).toString();
+    player.setSource(file);
+    player.play();
+    playlists.clearPlaying(currentPName());
+    playlists.setPlaying(file,currentPName());
+    ui->artistLabel->setText(currentlyPlaying.first->model()->data(currentlyPlaying.first->model()->index(t_next,2)).toString());
+    ui->titleLabel->setText(currentlyPlaying.first->model()->data(currentlyPlaying.first->model()->index(t_next,1)).toString());
+    if (playFollowCursor->isChecked()) {
+        currentlyPlaying.first->selectRow(t_next);
+    }
+    currentlyPlaying.second = t_next;
+}
+
 void Player::doFileOpen() {
     QString file = QFileDialog::getOpenFileName(this,"File",QStandardPaths::standardLocations(QStandardPaths::HomeLocation).at(0),extensions.join(' '));
     if (file.isEmpty()) { return; }
@@ -384,9 +447,7 @@ void Player::doFileOpen() {
     const QString pname = currentPName();
     playlists.clearPlaylist(pname);
     playlists.addEntryToPlaylist(file,pname);
-    ui->playlistView->currentWidget()->findChild<QTableView*>()->selectRow(0);
-    player.play();
-    playlists.setPlaying(file,pname);
+    playNextTrack();
 }
 
 void Player::doAddFile() {
@@ -399,7 +460,7 @@ void Player::doAddFile() {
 }
 
 void Player::doAddDir() {
-    QString folder = QFileDialog::getOpenFileName(this,tr("Add folder"),QStandardPaths::standardLocations(QStandardPaths::HomeLocation).at(0),QString(),nullptr,QFileDialog::Option::ShowDirsOnly);
+    QString folder = QFileDialog::getExistingDirectory(this,tr("Add folder"),QStandardPaths::standardLocations(QStandardPaths::HomeLocation).at(0));
     if (folder.isEmpty()) { return; }
     QDir dir(folder);
     QFileInfoList infos = dir.entryInfoList(extensions,QDir::Files|QDir::NoDotAndDotDot|QDir::Readable);
@@ -551,6 +612,9 @@ void Player::mediaStatusChanged(QMediaPlayer::MediaStatus status) {
     if (status==QMediaPlayer::EndOfMedia||player.playbackState()==QMediaPlayer::StoppedState) {
         playlists.clearPlaying(currentPName());
     }
+    if (status==QMediaPlayer::EndOfMedia) {
+        nextTrack()>-1?playNextTrack():player.stop();
+    }
 }
 
 void Player::mediaPlaybackStatusChanged(QMediaPlayer::PlaybackState state) {
@@ -560,9 +624,6 @@ void Player::mediaPlaybackStatusChanged(QMediaPlayer::PlaybackState state) {
     } else if (state==QMediaPlayer::PlayingState) {
         ui->playBtn->setIcon(QIcon(":/img/media-pause-512.png"));
         ui->playBtn->setChecked(true);
-        ui->artistLabel->setText(ui->playlistView->currentWidget()->findChild<QTableView*>()->currentIndex().siblingAtColumn(2).data().toString());
-        ui->titleLabel->setText(ui->playlistView->currentWidget()->findChild<QTableView*>()->currentIndex().siblingAtColumn(1).data().toString());
-        playlists.setPlaying(ui->playlistView->currentWidget()->findChild<QTableView*>()->currentIndex().siblingAtColumn(9).data().toString(),currentPName());
     }
     if (state==QMediaPlayer::StoppedState) {
         ui->position->setValue(0);

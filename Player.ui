@@ -224,6 +224,9 @@
            <property name="selectionBehavior">
             <enum>QAbstractItemView::SelectRows</enum>
            </property>
+           <property name="showGrid">
+            <bool>false</bool>
+           </property>
            <property name="sortingEnabled">
             <bool>true</bool>
            </property>
@@ -251,7 +254,7 @@
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>80</height>
+        <height>90</height>
        </size>
       </property>
       <property name="frameShape">
@@ -464,11 +467,6 @@
            <item>
             <property name="text">
              <string>Repeat track</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Shuffle</string>
             </property>
            </item>
            <item>

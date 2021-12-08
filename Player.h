@@ -11,6 +11,7 @@
 #include <QMediaPlayer>
 #include <QAudioOutput>
 #include <QMediaMetaData>
+#include <QRandomGenerator>
 
 #include "PlaylistManager.h"
 #include "PlayingDelegate.h"
@@ -82,6 +83,7 @@ private:
     QMediaPlayer player;
     QAudioOutput output;
     QStringList extensions;
+    QPair<QTableView*,int> currentlyPlaying;
 
     void initActions();
     void setLanguage(const QString &lang);
@@ -93,6 +95,8 @@ private:
     bool playlistNameUsed(const QString &aname = QString()) const;
     void setupPlayer();
     QString currentPName() const;
+    int nextTrack() const;
+    void playNextTrack();
 
 private slots:
     void doFileOpen();

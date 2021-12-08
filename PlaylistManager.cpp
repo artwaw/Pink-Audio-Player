@@ -94,7 +94,8 @@ void PlaylistManager::setPlaying(const QString &item, const QString &pname) {
     QStandardItemModel *model = pname.isEmpty()?live:mPlaylists.value(pname);
     for (auto x=0;x<model->rowCount();++x) {
         if (model->data(model->index(x,9)).toString()==item) {
-            model->setData(model->index(x,0),">");
+            model->setItem(x,0,new QStandardItem(">"));
+            qDebug() << "set" << x;
             break;
         }
     }
@@ -104,7 +105,8 @@ void PlaylistManager::clearPlaying(const QString &pname) {
     QStandardItemModel *model = pname.isEmpty()?live:mPlaylists.value(pname);
     for (auto x=0;x<model->rowCount();++x) {
         if (!model->data(model->index(x,0)).toString().isEmpty()) {
-            model->setData(model->index(x,0),QString());
+            model->setItem(x,0,new QStandardItem());
+            qDebug() << "cleared" << x;
             break;
         }
     }

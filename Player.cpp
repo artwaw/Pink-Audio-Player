@@ -287,6 +287,10 @@ void Player::decoratePlaylist(QTableView *view) {
     view->setItemDelegateForColumn(0,delegate);
     view->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(view->horizontalHeader(),&QHeaderView::customContextMenuRequested,this,&Player::columnContextMenuRequested);
+    connect(view,&QTableView::doubleClicked,this,[&](const QModelIndex &idx){
+        currentlyPlaying.first = ui->playlistView->currentWidget()->findChild<QTableView*>();
+        playNextTrack(idx.row());
+    });
 }
 
 void Player::setPlaylistColumnVisibility() {
@@ -657,7 +661,6 @@ void Player::playNextTrack(const int t_next) {
         currentlyPlaying.first->selectRow(t_next);
     }
     currentlyPlaying.second = t_next;
-    qDebug() << t_next << ui->orderBox->currentIndex();
 }
 
 void Player::closeEvent(QCloseEvent *event) {

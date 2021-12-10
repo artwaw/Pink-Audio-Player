@@ -75,6 +75,7 @@ private:
     //context menus
     QMenu *columnContextMenu;
     QMenu *tabBarContextMenu;
+    QMenu *playlistContextMenu;
 
     QTranslator qtTranslator;
     QTranslator myTranslator;
@@ -124,6 +125,10 @@ private slots:
     void mediaStatusChanged(QMediaPlayer::MediaStatus status);
     void mediaPlaybackStatusChanged(QMediaPlayer::PlaybackState state);
     void playNextTrack(const int t_next);
+    void playlistContextMenuRequested(const QPoint &point);
+    void playThisTrack(const QModelIndex &idx);
+    void editTags(const QModelIndex &idx);
+    void editMultipleTracks(const QModelIndexList &idxs);
 
 protected:
     void closeEvent(QCloseEvent *event) override;

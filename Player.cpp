@@ -179,31 +179,8 @@ void Player::initActions() {
     connect(helpIndex,&QAction::triggered,this,&Player::doHelp);
     helpMenu->addAction(helpIndex);
     columnContextMenu = new QMenu(this);
-    for (auto x=0;x<10;++x) {
-        QAction *action = new QAction(this);
-        action->setCheckable(true);
-        columnContextMenu->addAction(action);
-        connect(action,&QAction::triggered,this,&Player::playlistColumnVisibilityChanged);
-    }
-    columnContextMenu->addSeparator();
-    QAction *action = new QAction(tr("Reset"),this);
-    connect(action,&QAction::triggered,this,&Player::restorePlaylistColumns);
-    columnContextMenu->addAction(action);
     tabBarContextMenu = new QMenu(this);
-    tabBarContextMenu->addAction(fileNewPlaylist);
-    tabBarContextMenu->addAction(fileOpenPlaylist);
-    tabBarContextMenu->addAction(fileSavePlaylist);
-    QAction *closePlaylist = new QAction(tr("Close active playlist"),this);
-    connect(closePlaylist,&QAction::triggered,this,[=](){
-        playlistCloseRequested(ui->playlistView->currentIndex());
-    });
-    tabBarContextMenu->addAction(closePlaylist);
-    tabBarContextMenu->addSeparator();
-    QAction *renamePlaylist = new QAction(tr("Rename active playlist","Option to rename playlist tab"),this);
-    connect(renamePlaylist,&QAction::triggered,this,[=](){
-        renameTab(ui->playlistView->currentIndex());
-    });
-    tabBarContextMenu->addAction(renamePlaylist);
+    playlistContextMenu = new QMenu(this);
 }
 
 void Player::setLanguage(const QString &lang) {
@@ -290,11 +267,10 @@ void Player::decoratePlaylist(QTableView *view) {
     view->setSelectionBehavior(QAbstractItemView::SelectRows);
     view->setEditTriggers(QTableView::NoEditTriggers);
     view->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    view->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(view->horizontalHeader(),&QHeaderView::customContextMenuRequested,this,&Player::columnContextMenuRequested);
-    connect(view,&QTableView::doubleClicked,this,[&](const QModelIndex &idx){
-        currentlyPlaying.first = ui->playlistView->currentWidget()->findChild<QTableView*>();
-        playNextTrack(idx.row());
-    });
+    connect(view,&QTableView::customContextMenuRequested,this,&Player::playlistContextMenuRequested);
+    connect(view,&QTableView::doubleClicked,this,&Player::playThisTrack);
 }
 
 void Player::setPlaylistColumnVisibility() {
@@ -558,18 +534,24 @@ void Player::doHelp() {
 }
 
 void Player::columnContextMenuRequested(const QPoint &point) {
+    columnContextMenu->clear();
     QSettings settings;
     settings.beginGroup("playlists");
     settings.beginReadArray("visibility");
+    const QStringList titles = playlists.getColumnNames();
     for (auto x=0;x<10;++x) {
         settings.setArrayIndex(x);
-        columnContextMenu->actions().at(x)->setChecked(settings.value("v").toBool());
+        QAction *action = new QAction(titles.at(x),this);
+        action->setCheckable(true);
+        action->setChecked(settings.value("v").toBool());
+        columnContextMenu->addAction(action);
+        connect(action,&QAction::triggered,this,&Player::playlistColumnVisibilityChanged);
     }
     settings.endArray(); settings.endGroup();
-    const QStringList titles = playlists.getColumnNames();
-    for (auto x=0;x<titles.size();++x) {
-        columnContextMenu->actions().at(x)->setText(titles.at(x));
-    }
+    columnContextMenu->addSeparator();
+    QAction *action = new QAction(tr("Reset"),this);
+    connect(action,&QAction::triggered,this,&Player::restorePlaylistColumns);
+    columnContextMenu->addAction(action);
     columnContextMenu->popup(ui->playlistView->currentWidget()->mapToGlobal(point));
 }
 
@@ -625,6 +607,21 @@ void Player::renameTab(int index) {
 }
 
 void Player::tabBarContextMenuRequested(const QPoint &point) {
+    tabBarContextMenu->clear();
+    tabBarContextMenu->addAction(fileNewPlaylist);
+    tabBarContextMenu->addAction(fileOpenPlaylist);
+    tabBarContextMenu->addAction(fileSavePlaylist);
+    QAction *closePlaylist = new QAction(tr("Close active playlist"),this);
+    connect(closePlaylist,&QAction::triggered,this,[=](){
+        playlistCloseRequested(ui->playlistView->currentIndex());
+    });
+    tabBarContextMenu->addAction(closePlaylist);
+    tabBarContextMenu->addSeparator();
+    QAction *renamePlaylist = new QAction(tr("Rename active playlist","Option to rename playlist tab"),this);
+    connect(renamePlaylist,&QAction::triggered,this,[=](){
+        renameTab(ui->playlistView->currentIndex());
+    });
+    tabBarContextMenu->addAction(renamePlaylist);
     tabBarContextMenu->actions().at(3)->setDisabled(ui->playlistView->currentIndex()==0);
     tabBarContextMenu->popup(ui->playlistView->tabBar()->mapToGlobal(point));
 }
@@ -666,6 +663,57 @@ void Player::playNextTrack(const int t_next) {
     }
     currentlyPlaying.second = t_next;
 }
+
+void Player::playlistContextMenuRequested(const QPoint &point) {
+    playlistContextMenu->clear();
+    QAction *playFileAction = new QAction(tr("Play this"),this);
+    playFileAction->setEnabled(currentlyPlaying.first->selectionModel()->selectedIndexes().size()==1);
+    connect(playFileAction,&QAction::triggered,this,[&](){
+        playThisTrack(currentlyPlaying.first->selectionModel()->selectedIndexes().at(0));
+    });
+    playlistContextMenu->addAction(playFileAction);
+    playlistContextMenu->addSeparator();
+    QAction *editSingleFile = new QAction(tr("Edit single track"),this);
+    editSingleFile->setEnabled(currentlyPlaying.first->selectionModel()->selectedIndexes().size()==1);
+    connect(editSingleFile,&QAction::triggered,this,[&](){
+        editTags(currentlyPlaying.first->indexAt(playlistContextMenu->pos()));
+    });
+    playlistContextMenu->addAction(editSingleFile);
+    QAction *editMultiple = new QAction(tr("Edit selected tracks"),this);
+    editMultiple->setEnabled(currentlyPlaying.first->selectionModel()->selectedIndexes().size()>1);
+    connect(editMultiple,&QAction::triggered,this,[&](){
+        editMultipleTracks(currentlyPlaying.first->selectionModel()->selectedIndexes());
+    });
+    playlistContextMenu->addAction(editMultiple);
+    playlistContextMenu->addSeparator();
+    QAction *removeTrack = new QAction(tr("Remove track"),this);
+    removeTrack->setEnabled(currentlyPlaying.first->selectionModel()->selectedIndexes().size()==1);
+    connect(removeTrack,&QAction::triggered,this,[&](){
+        currentlyPlaying.first->model()->removeRow(currentlyPlaying.first->indexAt(playlistContextMenu->pos()).row());
+    });
+    playlistContextMenu->addAction(removeTrack);
+    QAction *removeSelectedTracks = new QAction(tr("Remove selected"),this);
+    removeSelectedTracks->setEnabled(currentlyPlaying.first->selectionModel()->hasSelection());
+    connect(removeSelectedTracks,&QAction::triggered,this,[&](){
+        while (currentlyPlaying.first->selectionModel()->hasSelection()) {
+            currentlyPlaying.first->model()->removeRow(currentlyPlaying.first->selectionModel()->selectedRows().first().row());
+        }
+    });
+    playlistContextMenu->addAction(removeSelectedTracks);
+    playlistContextMenu->addAction(clear);
+    playlistContextMenu->addSeparator();
+    playlistContextMenu->addAction(selectAll);
+    playlistContextMenu->popup(currentlyPlaying.first->mapToGlobal(point));
+}
+
+void Player::playThisTrack(const QModelIndex &idx) {
+    currentlyPlaying.first = ui->playlistView->currentWidget()->findChild<QTableView*>();
+    playNextTrack(idx.row());
+}
+
+void Player::editTags(const QModelIndex &idx) {Q_UNUSED(idx)}
+
+void Player::editMultipleTracks(const QModelIndexList &idxs) {Q_UNUSED(idxs)}
 
 void Player::closeEvent(QCloseEvent *event) {
     Q_UNUSED(event)

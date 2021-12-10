@@ -25,6 +25,7 @@ Player::Player(QWidget *parent)
     ui->playlistView->tabBar()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->playlistView->tabBar(),&QTabBar::customContextMenuRequested,this,&Player::tabBarContextMenuRequested);
     setupPlayer();
+    setupFileView();
 }
 
 Player::~Player()
@@ -435,6 +436,18 @@ int Player::prevTrack() const {
         return QRandomGenerator::global()->bounded(currentlyPlaying.first->model()->rowCount());
     }
     return -1;
+}
+
+void Player::setupFileView() {
+    QSettings settings;
+    filetree.setRootPath(settings.value("filetreepath",QStandardPaths::standardLocations(QStandardPaths::MusicLocation).at(0)).toString());
+    filetree.setNameFilters(extensions);
+    filetree.setNameFilterDisables(true);
+    ui->fileView->setModel(&filetree);
+    ui->fileView->setRootIndex(filetree.index(settings.value("filetreepath",QStandardPaths::standardLocations(QStandardPaths::MusicLocation).at(0)).toString()));
+    connect(ui->files,&QTabWidget::currentChanged,this,[&](int index){
+        ui->viewBox->setEnabled(index==0);
+    });
 }
 
 void Player::doFileOpen() {

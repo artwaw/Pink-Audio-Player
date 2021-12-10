@@ -55,7 +55,6 @@ private:
     QAction *orderRepeatAll;
     QAction *orderSingleTrack;
     QAction *orderRepeatTrack;
-    QAction *orderShuflle;
     QAction *orderShuffleRepeat;
     QAction *stopAfterCurrent;
     QActionGroup *followOrder;
@@ -95,8 +94,8 @@ private:
     bool playlistNameUsed(const QString &aname = QString()) const;
     void setupPlayer();
     QString currentPName() const;
-    int nextTrack() const;
-    void playNextTrack();
+    int nextTrack(const bool prev = false) const;
+    int prevTrack() const;
 
 private slots:
     void doFileOpen();
@@ -124,6 +123,7 @@ private slots:
     void tabBarContextMenuRequested(const QPoint &point);
     void mediaStatusChanged(QMediaPlayer::MediaStatus status);
     void mediaPlaybackStatusChanged(QMediaPlayer::PlaybackState state);
+    void playNextTrack(const int t_next);
 
 protected:
     void closeEvent(QCloseEvent *event) override;

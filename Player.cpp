@@ -75,12 +75,7 @@ void Player::initActions() {
     editMenu->addAction(clear);
     selectAll = new QAction(tr("Select &all"),this);
     selectAll->setShortcut(QKeySequence::SelectAll);
-    connect(selectAll,&QAction::triggered,this,[=](){
-        QTableView *view = ui->playlistView->currentWidget()->findChild<QTableView*>();
-        if (view) {
-            view->selectAll();
-        }
-    });
+    connect(selectAll,&QAction::triggered,this,[&](){currentlyPlaying.first->selectAll();});
     editMenu->addAction(selectAll);
     search = new QAction(tr("&Search..."),this);
     search->setShortcut(QKeySequence::Find);
@@ -103,33 +98,38 @@ void Player::initActions() {
     QMenu *playMenu = ui->menubar->addMenu(tr("&Playback"));
     playNext = new QAction(tr("&Next"),this);
     playNext->setShortcut(QKeySequence::FindNext);
+    connect(playNext,&QAction::triggered,ui->nextBtn,&QPushButton::clicked);
     playMenu->addAction(playNext);
     playPrev = new QAction(tr("Pre&v"),this);
     playPrev->setShortcut(QKeySequence::FindPrevious);
+    connect(playPrev,&QAction::triggered,ui->prevBtn,&QPushButton::clicked);
     playMenu->addAction(playPrev);
     playPause = new QAction(tr("&Play/Pause"),this);
     playPause->setShortcut(Qt::Key_Space);
+    connect(playPause,&QAction::triggered,ui->playBtn,&QPushButton::clicked);
     playMenu->addAction(playPause);
     playMenu->addSeparator();
     QMenu *orderMenu = playMenu->addMenu(tr("Playback order"));
     playOrder = new QActionGroup(this);
     orderDefault = new QAction(tr("Default"),this);
     orderDefault->setCheckable(true);
+    connect(orderDefault,&QAction::triggered,this,[=](){ui->orderBox->setCurrentIndex(0);});
     playOrder->addAction(orderDefault);
     orderRepeatAll = new QAction(tr("Repeat all"),this);
     orderRepeatAll->setCheckable(true);
+    connect(orderDefault,&QAction::triggered,this,[=](){ui->orderBox->setCurrentIndex(1);});
     playOrder->addAction(orderRepeatAll);
     orderSingleTrack = new QAction(tr("Play single track"),this);
     orderSingleTrack->setCheckable(true);
+    connect(orderDefault,&QAction::triggered,this,[=](){ui->orderBox->setCurrentIndex(2);});
     playOrder->addAction(orderSingleTrack);
     orderRepeatTrack = new QAction(tr("Repeat track"),this);
     orderRepeatTrack->setCheckable(true);
+    connect(orderDefault,&QAction::triggered,this,[=](){ui->orderBox->setCurrentIndex(3);});
     playOrder->addAction(orderRepeatTrack);
-    orderShuflle = new QAction(tr("Shuffle"),this);
-    orderShuflle->setCheckable(true);
-    playOrder->addAction(orderShuflle);
     orderShuffleRepeat = new QAction(tr("Shuffle repeat"));
     orderShuffleRepeat->setCheckable(true);
+    connect(orderDefault,&QAction::triggered,this,[=](){ui->orderBox->setCurrentIndex(4);});
     playOrder->addAction(orderShuffleRepeat);
     orderMenu->addActions(playOrder->actions());
     playMenu->addSeparator();
@@ -362,7 +362,7 @@ void Player::setupPlayer() {
             if (player.mediaStatus()==QMediaPlayer::LoadedMedia) {
                 player.play();
             } else {
-                playNextTrack();
+                playNextTrack(nextTrack());
             }
             return;
         }
@@ -370,6 +370,8 @@ void Player::setupPlayer() {
             player.pause();
         }
     });
+    connect(ui->nextBtn,&QPushButton::clicked,this,[&](){playNextTrack(nextTrack());});
+    connect(ui->prevBtn,&QPushButton::clicked,this,[&](){playNextTrack(nextTrack(true));});
     ui->muteBtn->setIcon(QIcon(":/img/volume-up-4-512.png"));
     connect(&output,&QAudioOutput::mutedChanged,this,[&](){
         ui->muteBtn->setIcon(QIcon(output.isMuted()?":/img/mute-2-512.png":":/img/volume-up-4-512.png"));
@@ -392,7 +394,8 @@ QString Player::currentPName() const {
     return ui->playlistView->currentIndex()==0?QString():ui->playlistView->tabText(ui->playlistView->currentIndex());
 }
 
-int Player::nextTrack() const {
+int Player::nextTrack(const bool prev) const {
+    if (prev) { return prevTrack(); }
     if (!currentlyPlaying.first) { return -1; }
     if (playFollowsCursor->isChecked()) {
         if (!currentlyPlaying.first->selectionModel()->hasSelection()) {
@@ -424,20 +427,30 @@ int Player::nextTrack() const {
     return -1;
 }
 
-void Player::playNextTrack() {
-    int t_next = nextTrack();
-    if (t_next<0) { return; }
-    const QString file = currentlyPlaying.first->model()->data(currentlyPlaying.first->model()->index(t_next,9)).toString();
-    player.setSource(file);
-    player.play();
-    playlists.clearPlaying(currentPName());
-    playlists.setPlaying(file,currentPName());
-    ui->artistLabel->setText(currentlyPlaying.first->model()->data(currentlyPlaying.first->model()->index(t_next,2)).toString());
-    ui->titleLabel->setText(currentlyPlaying.first->model()->data(currentlyPlaying.first->model()->index(t_next,1)).toString());
-    if (playFollowCursor->isChecked()) {
-        currentlyPlaying.first->selectRow(t_next);
+int Player::prevTrack() const {
+    if (!currentlyPlaying.first) { return -1; }
+    if (ui->orderBox->currentIndex()==2) {
+        return -1;
     }
-    currentlyPlaying.second = t_next;
+    if (ui->orderBox->currentIndex()==0) {
+        if (currentlyPlaying.second==0) {
+            return -1;
+        }
+        return currentlyPlaying.second-1;
+    }
+    if (ui->orderBox->currentIndex()==1) {
+        if (currentlyPlaying.second==0) {
+            return currentlyPlaying.first->model()->rowCount()-1;
+        }
+        return currentlyPlaying.second-1;
+    }
+    if (ui->orderBox->currentIndex()==3) {
+        return currentlyPlaying.second;
+    }
+    if (ui->orderBox->currentIndex()==4) {
+        return QRandomGenerator::global()->bounded(currentlyPlaying.first->model()->rowCount());
+    }
+    return -1;
 }
 
 void Player::doFileOpen() {
@@ -447,7 +460,7 @@ void Player::doFileOpen() {
     const QString pname = currentPName();
     playlists.clearPlaylist(pname);
     playlists.addEntryToPlaylist(file,pname);
-    playNextTrack();
+    playNextTrack(nextTrack());
 }
 
 void Player::doAddFile() {
@@ -613,7 +626,7 @@ void Player::mediaStatusChanged(QMediaPlayer::MediaStatus status) {
         playlists.clearPlaying(currentPName());
     }
     if (status==QMediaPlayer::EndOfMedia) {
-        nextTrack()>-1?playNextTrack():player.stop();
+        nextTrack()>-1?playNextTrack(nextTrack()):player.stop();
     }
 }
 
@@ -629,6 +642,22 @@ void Player::mediaPlaybackStatusChanged(QMediaPlayer::PlaybackState state) {
         ui->position->setValue(0);
         playlists.clearPlaying(currentPName());
     }
+}
+
+void Player::playNextTrack(const int t_next) {
+    if (t_next<0) { return; }
+    const QString file = currentlyPlaying.first->model()->data(currentlyPlaying.first->model()->index(t_next,9)).toString();
+    player.setSource(file);
+    player.play();
+    playlists.clearPlaying(currentPName());
+    playlists.setPlaying(file,currentPName());
+    ui->artistLabel->setText(currentlyPlaying.first->model()->data(currentlyPlaying.first->model()->index(t_next,2)).toString());
+    ui->titleLabel->setText(currentlyPlaying.first->model()->data(currentlyPlaying.first->model()->index(t_next,1)).toString());
+    if (playFollowCursor->isChecked()) {
+        currentlyPlaying.first->selectRow(t_next);
+    }
+    currentlyPlaying.second = t_next;
+    qDebug() << t_next << ui->orderBox->currentIndex();
 }
 
 void Player::closeEvent(QCloseEvent *event) {

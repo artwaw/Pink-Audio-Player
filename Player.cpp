@@ -286,6 +286,10 @@ void Player::decoratePlaylist(QTableView *view) {
     PlayingDelegate *delegate = new PlayingDelegate(this);
     view->setItemDelegateForColumn(0,delegate);
     view->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
+    view->setShowGrid(false);
+    view->setSelectionBehavior(QAbstractItemView::SelectRows);
+    view->setEditTriggers(QTableView::NoEditTriggers);
+    view->setSelectionMode(QAbstractItemView::ExtendedSelection);
     connect(view->horizontalHeader(),&QHeaderView::customContextMenuRequested,this,&Player::columnContextMenuRequested);
     connect(view,&QTableView::doubleClicked,this,[&](const QModelIndex &idx){
         currentlyPlaying.first = ui->playlistView->currentWidget()->findChild<QTableView*>();

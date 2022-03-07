@@ -4,6 +4,10 @@
 #include <QObject>
 #include <QThread>
 
+/*!
+ * \brief Class handling the multimedia file library
+ * \todo IMPLEMENT
+ */
 class LibraryClass : public QObject
 {
 Q_OBJECT

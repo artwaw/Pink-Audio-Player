@@ -1,0 +1,4 @@
+<map id="PlayingDelegate" name="PlayingDelegate">
+<area shape="rect" id="node1" title="Delegate class providing the currently played track indicator." alt="" coords="21,80,139,107"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,5,155,32"/>
+</map>

@@ -12,6 +12,24 @@
 
 #include "VMedia.h"
 
+/*!
+ * \class PlaylistManager
+ * \brief Class managing the backend of the playlists
+ *
+ * Class internally uses QStandardItemModel to hold two separate sets of data:
+ * one for the "live view" playlist and other one, in form of QHash table, for
+ * the other playlists.
+ * I considered using in-memory Sqlite db, which would be faster and more memory
+ * efficient however refreshing the view would lead to problems with maintaining
+ * selection.
+ *
+ * Internally class calls the wrapper around the TagLib to read the metadata from
+ * the files.
+ *
+ * The class provides usuall getter methods to manage the content of each of the
+ * playlists.
+ * \sa VMedia
+ */
 class PlaylistManager : public QObject
 {
     Q_OBJECT
@@ -36,11 +54,11 @@ public slots:
     void clearPlaylist(const QString &pname);
 
 private:
-    QHash<QString,QStandardItemModel*> mPlaylists;
-    QStandardItemModel* live;
-    QString liveTitle;
-    const QString dataFile = "db.pap";
-    VMedia mediaRader;
+    QHash<QString,QStandardItemModel*> mPlaylists; //!< Internal playlist holder structure for user generated playlists
+    QStandardItemModel* live; //!< "Live view" playlist model
+    QString liveTitle; //!< "Live view" playlist title
+    const QString dataFile = "db.pap"; //!< database file name
+    VMedia mediaRader; //!< Tag reading interface
 
     void setupHeaders();
     void initPlaylists();

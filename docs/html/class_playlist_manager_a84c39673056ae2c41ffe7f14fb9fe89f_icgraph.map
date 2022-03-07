@@ -1,0 +1,4 @@
+<map id="PlaylistManager::initPlaylists" name="PlaylistManager::initPlaylists">
+<area shape="rect" id="node1" title="Reads the stored playists and their contents from the db file." alt="" coords="220,13,411,39"/>
+<area shape="rect" id="node2" href="$class_playlist_manager.html#a2aed33b0cb8cee2d2829945bdc04b9ca" title="C&#39;tor, initializes internal structures." alt="" coords="5,5,172,47"/>
+</map>

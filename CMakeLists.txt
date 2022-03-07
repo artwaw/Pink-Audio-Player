@@ -26,7 +26,7 @@ set_source_files_properties(${papIcon} PROPERTIES MACOSX_PACKAGE_LOCATION "Resou
 
 include_directories(${tagPath}/tag.framework/Headers)
 
-set(DIST_FILES README.md LICENSE)
+set(DIST_FILES README.md LICENSE Doxyfile)
 
 set(PROJECT_SOURCES
         main.cpp res.qrc
@@ -34,6 +34,7 @@ set(PROJECT_SOURCES
         Player.cpp Player.h Player.ui
         PlaylistManager.cpp PlaylistManager.h
         PlayingDelegate.cpp PlayingDelegate.h
+        PrefsDialog.cpp PrefsDialog.h PrefsDialog.ui
         VMedia.cpp VMedia.h
         ${TS_FILES}
         ${DIST_FILES}
@@ -61,7 +62,7 @@ set_target_properties(PAP PROPERTIES
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     MACOSX_BUNDLE_ICON_FILE pap.icns
-    MACOSX_BUNDLE_COPYRIGHT "(c)2021 Artur Wawrowski"
+    MACOSX_BUNDLE_COPYRIGHT "(c)2022 Artur Wawrowski"
     OUTPUT_NAME "Pink Audio Player"
 )
 

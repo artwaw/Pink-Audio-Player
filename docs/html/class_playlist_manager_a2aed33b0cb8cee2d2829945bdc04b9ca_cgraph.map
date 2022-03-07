@@ -1,0 +1,5 @@
+<map id="PlaylistManager::PlaylistManager" name="PlaylistManager::PlaylistManager">
+<area shape="rect" id="node1" title="C&#39;tor, initializes internal structures." alt="" coords="5,23,172,65"/>
+<area shape="rect" id="node2" href="$class_playlist_manager.html#a84c39673056ae2c41ffe7f14fb9fe89f" title="Reads the stored playists and their contents from the db file." alt="" coords="228,5,419,32"/>
+<area shape="rect" id="node3" href="$class_playlist_manager.html#a3f721efb61bb11d99a0ce6ca6e514eaf" title="Method assigning translated headers to the views." alt="" coords="220,56,427,83"/>
+</map>

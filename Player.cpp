@@ -1,7 +1,12 @@
 #include "Player.h"
 #include "./ui_Player.h"
-#include <QMediaFormat>
 
+/*!
+ * \brief Main class' c'tor.
+ *
+ *
+ * \param parent Optional parent parameter.
+ */
 Player::Player(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::Player)
@@ -33,6 +38,9 @@ Player::~Player()
     delete ui;
 }
 
+/*!
+ * \brief Menu and action items init.
+ */
 void Player::initActions() {
     QMenu *fileMenu = ui->menubar->addMenu(tr("&File"));
     fileOpen = new QAction("&Open...",this);
@@ -93,7 +101,9 @@ void Player::initActions() {
     prefs = new QAction(tr("&Preferences"),this);
     prefs->setShortcut(QKeySequence::Preferences);
     connect(prefs,&QAction::triggered,this,[=](){
-
+        PrefsDialog *dialog = new PrefsDialog(this);
+        dialog->open();
+        connect(dialog,&PrefsDialog::accepted,dialog,&PrefsDialog::deleteLater);
     });
     editMenu->addAction(prefs);
     QMenu *playMenu = ui->menubar->addMenu(tr("&Playback"));
@@ -184,6 +194,10 @@ void Player::initActions() {
     playlistContextMenu = new QMenu(this);
 }
 
+/*!
+ * \brief Language change action chain init.
+ * \param lang ISO locale inidicator
+ */
 void Player::setLanguage(const QString &lang) {
     QString loc;
     QSettings settings;
@@ -199,6 +213,10 @@ void Player::setLanguage(const QString &lang) {
     settings.sync();
 }
 
+/*!
+ * \brief Routine restoring playlists and their items.
+ * \todo Sorting
+ */
 void Player::restorePlaylists() {
     QSettings settings;
     settings.beginGroup("playlists");
@@ -239,6 +257,10 @@ void Player::restorePlaylists() {
     connect(ui->playlistView->tabBar(),&QTabBar::currentChanged,this,&Player::playlistChanged);
 }
 
+/*!
+ * \brief Routing putting headers into playlists
+ * \param view Playlist tab pointer to be decorated
+ */
 void Player::decoratePlaylist(QTableView *view) {
     if (!view||!view->model()) { return; }
     QSettings settings;
@@ -274,6 +296,10 @@ void Player::decoratePlaylist(QTableView *view) {
     connect(view,&QTableView::doubleClicked,this,&Player::playThisTrack);
 }
 
+/*!
+ * \brief Routine applying column visibility settings to all playlists
+ * \todo Remove debug code
+ */
 void Player::setPlaylistColumnVisibility() {
     QSettings settings; settings.beginGroup("playlists");
     settings.beginReadArray("visibility");
@@ -289,6 +315,11 @@ void Player::setPlaylistColumnVisibility() {
     settings.endGroup();
 }
 
+/*!
+ * \brief Routinge returning the unique playlist name
+ * \param pname Internal playlist id string
+ * \return Unique, visible playlist name
+ */
 QString Player::getUniquePlaylistName(const QString &pname) const {
     QString name;
     if (pname.isEmpty()) { name = tr("New playlist"); } else { name = pname; }
@@ -302,6 +333,9 @@ QString Player::getUniquePlaylistName(const QString &pname) const {
     return name;
 }
 
+/*!
+ * \brief Routine storing visible playlist names
+ */
 void Player::writePlaylistNames() {
     QSettings settings; settings.beginGroup("playlists");
     settings.beginWriteArray("order");
@@ -312,6 +346,11 @@ void Player::writePlaylistNames() {
     settings.endArray(); settings.endGroup(); settings.sync();
 }
 
+/*!
+ * \brief Routine checking of the playlist name (displayed) is already in use
+ * \param aname Name to be tested
+ * \return TRUE if used already
+ */
 bool Player::playlistNameUsed(const QString &aname) const {
     if (aname.isEmpty()) { return false; }
     bool used = false;
@@ -321,6 +360,10 @@ bool Player::playlistNameUsed(const QString &aname) const {
     return used;
 }
 
+/*!
+ * \brief Routine setting up player visuals and actions
+ * \todo Refine acceptable extension list, currently hardcoded from educated guess.
+ */
 void Player::setupPlayer() {
     player.setAudioOutput(&output);
     ui->volumeSlider->setValue(QAudio::convertVolume(output.volume(),QAudio::LinearVolumeScale,QAudio::LogarithmicVolumeScale)*100);
@@ -375,10 +418,21 @@ void Player::setupPlayer() {
     //extensions.removeDuplicates();
 }
 
+/*!
+ * \brief Returns the name of currently active playlist
+ * \return Playlist visible name or QString() if not found
+ */
 QString Player::currentPName() const {
     return ui->playlistView->currentIndex()==0?QString():ui->playlistView->tabText(ui->playlistView->currentIndex());
 }
 
+/*!
+ * \brief Routine resposible for calculating the next track to be played.
+ *
+ * The routine takes into the account the playback mode setting.
+ * \param prev Jump direction, TRUE if jump backward. Only applicable if playback setting != random and playback doesn't follow the cursor.
+ * \return Model row of the next track or -1.
+ */
 int Player::nextTrack(const bool prev) const {
     if (prev) { return prevTrack(); }
     if (!currentlyPlaying.first) { return -1; }
@@ -412,6 +466,10 @@ int Player::nextTrack(const bool prev) const {
     return -1;
 }
 
+/*!
+ * \brief Routine returns previous track in order, if applicable.
+ * \return Previous track number or -1
+ */
 int Player::prevTrack() const {
     if (!currentlyPlaying.first) { return -1; }
     if (ui->orderBox->currentIndex()==2) {
@@ -438,6 +496,10 @@ int Player::prevTrack() const {
     return -1;
 }
 
+/*!
+ * \brief Routine setting up the file model and initialising the display parts of the view.
+ * \todo Make appstore compliant (iCloud and attached locations not yet visible).
+ */
 void Player::setupFileView() {
     QSettings settings;
     filetree.setRootPath(settings.value("filetreepath",QStandardPaths::standardLocations(QStandardPaths::MusicLocation).at(0)).toString());
@@ -450,6 +512,11 @@ void Player::setupFileView() {
     });
 }
 
+/*!
+ * \brief Menu action. Clears the current playlist and opens the file.
+ *
+ * If user cancels the file open action nothing changes.
+ */
 void Player::doFileOpen() {
     QString file = QFileDialog::getOpenFileName(this,"File",QStandardPaths::standardLocations(QStandardPaths::HomeLocation).at(0),extensions.join(' '));
     if (file.isEmpty()) { return; }
@@ -460,6 +527,10 @@ void Player::doFileOpen() {
     playNextTrack(nextTrack());
 }
 
+/*!
+ * \brief Menu action. Adds selected, readable files to the current playlist.
+ * No depth scan on folders.
+ */
 void Player::doAddFile() {
     QStringList files = QFileDialog::getOpenFileNames(this,tr("File(s) to add"),QStandardPaths::standardLocations(QStandardPaths::HomeLocation).at(0),extensions.join(' '));
     if (files.isEmpty()) { return; }
@@ -469,6 +540,12 @@ void Player::doAddFile() {
     }
 }
 
+/*!
+ * \brief Menu action. Adds all readable files from the selected folder to the current playlist.
+ *
+ * Currently only 0-level files are added.
+ * \todo Deep folder scan and add for child folders.
+ */
 void Player::doAddDir() {
     QString folder = QFileDialog::getExistingDirectory(this,tr("Add folder"),QStandardPaths::standardLocations(QStandardPaths::HomeLocation).at(0));
     if (folder.isEmpty()) { return; }
@@ -483,10 +560,17 @@ void Player::doAddDir() {
     }
 }
 
+/*!
+ * \brief Menu action. Adds streamable, network location to the current playlist.
+ * \todo IMPLEMENT
+ */
 void Player::doAddLoc() {
 
 }
 
+/*!
+ * \brief Menu action. Creates a new playlist with unique display name.
+ */
 void Player::doNewPlaylist() {
     QString pname = getUniquePlaylistName(QInputDialog::getText(this,tr("Playlist name"),tr("New playlist name:")));
     playlists.addNew(pname);
@@ -502,14 +586,25 @@ void Player::doNewPlaylist() {
     writePlaylistNames();
 }
 
+/*!
+ * \brief Menu action. Loads playlist from file.
+ * \todo IMPLEMENT
+ */
 void Player::doOpenPlaylist() {
 
 }
 
+/*!
+ * \brief Menu action. Saves playlist to file.
+ * \todo IMPLEMENT
+ */
 void Player::doSavePlaylist() {
 
 }
 
+/*!
+ * \brief Menu action. Clears all items of the current playlist.
+ */
 void Player::doClearPlaylist() {
     playlists.retrieve(currentPName())->clear();
 }
@@ -546,6 +641,10 @@ void Player::doHelp() {
 
 }
 
+/*!
+ * \brief Pops up context menu for the playlist header allowing the user to change the column visibility.
+ * \param point Coordinates of the click within the header view.
+ */
 void Player::columnContextMenuRequested(const QPoint &point) {
     columnContextMenu->clear();
     QSettings settings;
@@ -568,6 +667,10 @@ void Player::columnContextMenuRequested(const QPoint &point) {
     columnContextMenu->popup(ui->playlistView->currentWidget()->mapToGlobal(point));
 }
 
+/*!
+ * \brief Restores the default column visibility.
+ * \sa Player::setPlaylistColumnVisbility()
+ */
 void Player::restorePlaylistColumns() {
     QSettings settings;
     settings.beginGroup("playlists");
@@ -582,6 +685,10 @@ void Player::restorePlaylistColumns() {
     setPlaylistColumnVisibility();
 }
 
+/*!
+ * \brief Writes down the new playlist columns visibility setup and applies it to all playlists.
+ * \sa Player::setPlaylistColumnVisbility()
+ */
 void Player::playlistColumnVisibilityChanged() {
     QSettings settings;
     settings.beginGroup("playlists");
@@ -595,6 +702,10 @@ void Player::playlistColumnVisibilityChanged() {
     setPlaylistColumnVisibility();
 }
 
+/*!
+ * \brief Removes the selected playlist and releases the view.
+ * \param index Index of the playlist view to be closed.
+ */
 void Player::playlistCloseRequested(int index) {
     if (index>0) {
         playlists.remove(ui->playlistView->tabBar()->tabText(index));
@@ -603,12 +714,20 @@ void Player::playlistCloseRequested(int index) {
     }
 }
 
+/*!
+ * \brief Stores the newly selected current playlist index.
+ * \param index Index of the new playlist in the view.
+ */
 void Player::playlistChanged(int index) {
     QSettings settings; settings.beginGroup("playlists");
     settings.setValue("playlistIndex",index);
     settings.endGroup(); settings.sync();
 }
 
+/*!
+ * \brief Handles event where user renames the playlist.
+ * \param index The index of the playlist for which the visible name changed.
+ */
 void Player::renameTab(int index) {
     QString oldName = ui->playlistView->tabText(index);
     QString newName = QInputDialog::getText(this,tr("Rename this playlist"),tr("New playlist name:"),QLineEdit::Normal,oldName);
@@ -619,6 +738,10 @@ void Player::renameTab(int index) {
     writePlaylistNames();
 }
 
+/*!
+ * \brief Pops up context menu for playlist tabs.
+ * \param point Coursor coordinates in the tab
+ */
 void Player::tabBarContextMenuRequested(const QPoint &point) {
     tabBarContextMenu->clear();
     tabBarContextMenu->addAction(fileNewPlaylist);
@@ -639,6 +762,11 @@ void Player::tabBarContextMenuRequested(const QPoint &point) {
     tabBarContextMenu->popup(ui->playlistView->tabBar()->mapToGlobal(point));
 }
 
+/*!
+ * \brief Routine handling media status change. Either clears current file indicator or jumps to the next track.
+ * \param status New status of QMediaPlayer::MediaStatus
+ * \sa Player::mediaPlaybackStatusChanged()
+ */
 void Player::mediaStatusChanged(QMediaPlayer::MediaStatus status) {
     if (status==QMediaPlayer::EndOfMedia||player.playbackState()==QMediaPlayer::StoppedState) {
         playlists.clearPlaying(currentPName());
@@ -648,6 +776,11 @@ void Player::mediaStatusChanged(QMediaPlayer::MediaStatus status) {
     }
 }
 
+/*!
+ * \brief Routine handling change in playback status (pause/stop etc). Updates button icons etc.
+ * \param state New status of QMediaPlayer::PlaybackStatus
+ * \sa Player::mediaStatusChanged()
+ */
 void Player::mediaPlaybackStatusChanged(QMediaPlayer::PlaybackState state) {
     if (state==QMediaPlayer::PausedState||state==QMediaPlayer::StoppedState) {
         ui->playBtn->setIcon(QIcon(":/img/play-7-512.png"));
@@ -662,6 +795,12 @@ void Player::mediaPlaybackStatusChanged(QMediaPlayer::PlaybackState state) {
     }
 }
 
+/*!
+ * \brief Routine actively switching playback to the next track in the selected order.
+ * \param t_next Row of the playlist with the next track in order.
+ * \sa Player::nextTrack()
+ * \sa Player::prevTrack()
+ */
 void Player::playNextTrack(const int t_next) {
     if (t_next<0) { return; }
     const QString file = currentlyPlaying.first->model()->data(currentlyPlaying.first->model()->index(t_next,9)).toString();
@@ -677,6 +816,10 @@ void Player::playNextTrack(const int t_next) {
     currentlyPlaying.second = t_next;
 }
 
+/*!
+ * \brief Pops up the context menu for the playlist.
+ * \param point Coordinates of the coursor within the playlist view.
+ */
 void Player::playlistContextMenuRequested(const QPoint &point) {
     playlistContextMenu->clear();
     QAction *playFileAction = new QAction(tr("Play this"),this);
@@ -719,15 +862,33 @@ void Player::playlistContextMenuRequested(const QPoint &point) {
     playlistContextMenu->popup(currentlyPlaying.first->mapToGlobal(point));
 }
 
+/*!
+ * \brief Routine selecting the clicked track for the immediate playback.
+ * \param idx Model index with the clicked row.
+ */
 void Player::playThisTrack(const QModelIndex &idx) {
     currentlyPlaying.first = ui->playlistView->currentWidget()->findChild<QTableView*>();
     playNextTrack(idx.row());
 }
 
+/*!
+ * \brief Routine for editing single file tags
+ * \param idx Model index for the track in question
+ * \todo IMPLEMENT
+ */
 void Player::editTags(const QModelIndex &idx) {Q_UNUSED(idx)}
 
+/*!
+ * \brief Routine for editing multiple file tags at once
+ * \param idxs List of model indexes for the tracks in question
+ * \todo IMPLEMENT
+ */
 void Player::editMultipleTracks(const QModelIndexList &idxs) {Q_UNUSED(idxs)}
 
+/*!
+ * \brief Routine called when exiting the program. Saves the program state (and exisitng playlists).
+ * \param event QCloseEvent object pointer for the event.
+ */
 void Player::closeEvent(QCloseEvent *event) {
     Q_UNUSED(event)
     QSettings settings;
@@ -737,6 +898,10 @@ void Player::closeEvent(QCloseEvent *event) {
     writePlaylistNames();
 }
 
+/*!
+ * \brief Language change event handler.
+ * \param e QEvent with details of the event.
+ */
 void Player::changeEvent(QEvent *e) {
     QMainWindow::changeEvent(e);
     switch (e->type()) {

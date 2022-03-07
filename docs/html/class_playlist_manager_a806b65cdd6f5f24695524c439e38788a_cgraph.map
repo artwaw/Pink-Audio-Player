@@ -1,0 +1,4 @@
+<map id="PlaylistManager::retranslateHeaders" name="PlaylistManager::retranslateHeaders">
+<area shape="rect" id="node1" title="Routine forces resetting header names. Called upon a language change event." alt="" coords="5,5,192,47"/>
+<area shape="rect" id="node2" href="$class_playlist_manager.html#a3f721efb61bb11d99a0ce6ca6e514eaf" title="Method assigning translated headers to the views." alt="" coords="240,13,447,39"/>
+</map>

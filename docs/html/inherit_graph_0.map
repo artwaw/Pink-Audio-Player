@@ -1,0 +1,6 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" title=" " alt="" coords="5,56,76,83"/>
+<area shape="rect" id="node2" href="$class_library_class.html" title="Class handling the multimedia file library." alt="" coords="135,5,231,32"/>
+<area shape="rect" id="node3" href="$class_playlist_manager.html" title="Class managing the backend of the playlists." alt="" coords="124,56,241,83"/>
+<area shape="rect" id="node4" href="$class_v_media.html" title="C++ interface to the multimedia tags read by the TagLib." alt="" coords="149,107,216,133"/>
+</map>

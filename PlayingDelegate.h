@@ -5,6 +5,9 @@
 #include <QPainter>
 #include <QObject>
 
+/*!
+ * \brief Delegate class providing the currently played track indicator.
+ */
 class PlayingDelegate : public QStyledItemDelegate
 {
     Q_OBJECT

@@ -13,79 +13,92 @@
 #include <QMediaMetaData>
 #include <QRandomGenerator>
 #include <QFileSystemModel>
+#include <QMediaFormat>
 
 #include "PlaylistManager.h"
 #include "PlayingDelegate.h"
+#include "PrefsDialog.h"
 #include "VMedia.h"
 
 QT_BEGIN_NAMESPACE
     namespace Ui { class Player; }
 QT_END_NAMESPACE
 
+ /*!
+  * \class Player
+ * \brief Main class of the application.
+ *
+ * This class hosts the main even loop, main UI and integrates all user actions.
+ * Member actions are grouped and prefixed.
+ */
 class Player : public QMainWindow
 {
     Q_OBJECT
 public:
     Player(QWidget *parent = nullptr);
+
+    /*!
+     * \brief Default d'tor
+     */
     ~Player();
 
 private:
-    Ui::Player *ui;
+    Ui::Player *ui; //! Main user interface pointer.
     //menu file actions
-    QAction *fileOpen;
-    QAction *fileAddFile;
-    QAction *fileAddDir;
-    QAction *fileAddLoc;
-    QAction *fileNewPlaylist;
-    QAction *fileOpenPlaylist;
-    QAction *fileSavePlaylist;
-    QAction *fileExit;
+    QAction *fileOpen; //! File|Open file
+    QAction *fileAddFile; //! File|Add file
+    QAction *fileAddDir; //! File|Add folder
+    QAction *fileAddLoc; //! File|Add location (i.e. network stream)
+    QAction *fileNewPlaylist; //! File|Add new, empty playlist
+    QAction *fileOpenPlaylist; //! File|Open saved playlist in the new window
+    QAction *fileSavePlaylist; //! File|Save current playlist
+    QAction *fileExit; //! File|Close the program
     //menu edit
-    QAction *clear;
-    QAction *selectAll;
-    QAction *search;
-    QAction *removeDuplicates;
-    QAction *removeDeadItems;
-    QAction *prefs;
+    QAction *clear; //! Edit|Clear the current playlist
+    QAction *selectAll; //! Edit|Select all items in the current playlist
+    QAction *search; //! Edit|Search in current playlist
+    QAction *removeDuplicates; //! Edit|Find and remove duplicates
+    QAction *removeDeadItems; //! Edit|Remove dead (non existent) entries
+    QAction *prefs; //! Edit|Preferences dialog
     //menu playback
-    QAction *playNext;
-    QAction *playPrev;
-    QAction *playPause;
-    QActionGroup *playOrder;
-    QAction *orderDefault;
-    QAction *orderRepeatAll;
-    QAction *orderSingleTrack;
-    QAction *orderRepeatTrack;
-    QAction *orderShuffleRepeat;
-    QAction *stopAfterCurrent;
-    QActionGroup *followOrder;
-    QAction *playFollowCursor;
-    QAction *playFollowsCursor;
+    QAction *playNext; //! Playback|Play next entry
+    QAction *playPrev; //! Playback|Play previous entry
+    QAction *playPause; //! Playback|Pause or renew play
+    QActionGroup *playOrder; //! Action group holding play order actions
+    QAction *orderDefault; //! Order|Play tracks one by one
+    QAction *orderRepeatAll; //! Order|Play tracks one by one and don't stop at the end
+    QAction *orderSingleTrack; //! Order|Play single track once
+    QAction *orderRepeatTrack; //! Order|Repeat single track
+    QAction *orderShuffleRepeat; //! Order|Shuffle tracks and play all on repeat
+    QAction *stopAfterCurrent; //! Action flag to stop after playing current track
+    QActionGroup *followOrder; //! Action group controlling visual cursor follow order
+    QAction *playFollowCursor; //! Action flag selecting that next track played is the one selected
+    QAction *playFollowsCursor; //! Action flag selecting that next track is from the order (and selection follows)
     //menu library
-    QAction *libClear;
-    QAction *libRebuild;
-    QAction *libUpdate;
+    QAction *libClear; //! Library|Clear all the items from the db
+    QAction *libRebuild; //! Library|Triggers immediate rebuilding of the db
+    QAction *libUpdate; //! Library|Triggers immediate update of the library
     //menu language
-    QActionGroup *languages;
-    QAction *langPol;
-    QAction *langEng;
-    QAction *langDeu;
+    QActionGroup *languages; //! Action group for selecting languages
+    QAction *langPol; //! Polish language selector
+    QAction *langEng; //! English langugae selector
+    QAction *langDeu; //! German language selector
     //menu help
-    QAction *helpAbout;
-    QAction *helpIndex;
+    QAction *helpAbout; //! Action triggering the display of "About" box
+    QAction *helpIndex; //! Action triggerign the display of the help index
     //context menus
-    QMenu *columnContextMenu;
-    QMenu *tabBarContextMenu;
-    QMenu *playlistContextMenu;
+    QMenu *columnContextMenu; //! Context menu for playlist columns visibility selection
+    QMenu *tabBarContextMenu; //! Context menu for adding/renaming/etc of playlists
+    QMenu *playlistContextMenu; //! Context menu for manipulating items in the playlist
 
-    QTranslator qtTranslator;
-    QTranslator myTranslator;
-    PlaylistManager playlists;
-    QMediaPlayer player;
-    QAudioOutput output;
-    QStringList extensions;
-    QPair<QTableView*,int> currentlyPlaying;
-    QFileSystemModel filetree;
+    QTranslator qtTranslator; //! Translator for Qt parts
+    QTranslator myTranslator; //! Translator for custom parts
+    PlaylistManager playlists; //! Playlist manager instance
+    QMediaPlayer player; //! Multimedia player instance
+    QAudioOutput output; //! Output engine instance
+    QStringList extensions; //! Ready list of file extensions handled
+    QPair<QTableView*,int> currentlyPlaying; //! Proxy item holding currently played item's index (row) and plalist it comes from
+    QFileSystemModel filetree; //! Filesystem view backend
 
     void initActions();
     void setLanguage(const QString &lang);

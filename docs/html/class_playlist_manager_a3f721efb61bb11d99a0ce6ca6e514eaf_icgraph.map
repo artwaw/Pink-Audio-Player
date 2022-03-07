@@ -1,0 +1,5 @@
+<map id="PlaylistManager::setupHeaders" name="PlaylistManager::setupHeaders">
+<area shape="rect" id="node1" title="Method assigning translated headers to the views." alt="" coords="240,46,447,73"/>
+<area shape="rect" id="node2" href="$class_playlist_manager.html#a2aed33b0cb8cee2d2829945bdc04b9ca" title="C&#39;tor, initializes internal structures." alt="" coords="15,5,182,47"/>
+<area shape="rect" id="node3" href="$class_playlist_manager.html#a806b65cdd6f5f24695524c439e38788a" title="Routine forces resetting header names. Called upon a language change event." alt="" coords="5,71,192,112"/>
+</map>

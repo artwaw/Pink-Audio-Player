@@ -1,0 +1,27 @@
+var class_playlist_manager =
+[
+    [ "PlaylistManager", "class_playlist_manager.html#a2aed33b0cb8cee2d2829945bdc04b9ca", null ],
+    [ "addEntriesToPlaylist", "class_playlist_manager.html#ae3487a8f2b5672ced9c168da6f5fd50d", null ],
+    [ "addEntryToPlaylist", "class_playlist_manager.html#ae20c7bd7a316a721eac8357aeaffe123", null ],
+    [ "addNew", "class_playlist_manager.html#ad752b8f9ba7354e4a6ef9dd4451a7437", null ],
+    [ "clearPlaying", "class_playlist_manager.html#a3187389d3415dd26fb9a66a6bb5882ee", null ],
+    [ "clearPlaylist", "class_playlist_manager.html#abe6c838b8727014adf06f45369304f1f", null ],
+    [ "getAll", "class_playlist_manager.html#ac4914d207e6712efb1d7dc7902acd774", null ],
+    [ "getColumnNames", "class_playlist_manager.html#a3e761a3aaf22b786ca9bd6a60e5c48bc", null ],
+    [ "getLiveTitle", "class_playlist_manager.html#aa19eed74de4a2fa85ddb20606fa6ed7e", null ],
+    [ "initPlaylists", "class_playlist_manager.html#a84c39673056ae2c41ffe7f14fb9fe89f", null ],
+    [ "itemCountForPlaylist", "class_playlist_manager.html#a0ba572454d3eb9a6a40e07c786f5777d", null ],
+    [ "remove", "class_playlist_manager.html#aef270e742114dc0ae7b8a580be3369fa", null ],
+    [ "rename", "class_playlist_manager.html#ab63d1b01b05c62c515316311b5954d62", null ],
+    [ "retranslateHeaders", "class_playlist_manager.html#a806b65cdd6f5f24695524c439e38788a", null ],
+    [ "retrieve", "class_playlist_manager.html#a71c57bcf1013bea72183125bdbaa2de6", null ],
+    [ "setPlaying", "class_playlist_manager.html#a56be3d275553758233b30b011ba9120e", null ],
+    [ "setupHeaders", "class_playlist_manager.html#a3f721efb61bb11d99a0ce6ca6e514eaf", null ],
+    [ "sync", "class_playlist_manager.html#a69af84b4a090e8d1c70e227490f2fb2b", null ],
+    [ "uniqueName", "class_playlist_manager.html#adbe0f05dfb2c48e558edd6cdc13c75a1", null ],
+    [ "dataFile", "class_playlist_manager.html#ac37b2dfc14f39be4482c6917b44a3f65", null ],
+    [ "live", "class_playlist_manager.html#a5bc3d97f8517f329001cabf9dce26e76", null ],
+    [ "liveTitle", "class_playlist_manager.html#a371d16700449a1e7712ded1cfff6a1b0", null ],
+    [ "mediaRader", "class_playlist_manager.html#a54aa4e3ec7557e0a03fc6a457ff22f35", null ],
+    [ "mPlaylists", "class_playlist_manager.html#af73e7f14856900f123453878a8eb571e", null ]
+];

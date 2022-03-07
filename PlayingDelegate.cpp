@@ -1,5 +1,11 @@
 #include "PlayingDelegate.h"
 
+/*!
+ * \brief Routine paints the indicator from file.
+ * \param painter The painter to which to paint on
+ * \param option Option holding the available size and offset
+ * \param index Index to the cell in which to paint
+ */
 void PlayingDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const {
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt,index);

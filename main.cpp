@@ -6,7 +6,7 @@
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setApplicationVersion("0.1");
+    QCoreApplication::setApplicationVersion("0.10.2");
     QCoreApplication::setOrganizationName("TrollNet");
     QCoreApplication::setOrganizationDomain("trollnet.com.pl");
     QCoreApplication::setApplicationName("Pink Audio Player");

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(PAP VERSION 0.10 LANGUAGES CXX)
+project(PAP VERSION 0.10.2 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 

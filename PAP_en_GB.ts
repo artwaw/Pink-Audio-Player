@@ -60,7 +60,7 @@
     </message>
     <message>
         <location filename="Player.ui" line="204"/>
-        <location filename="Player.cpp" line="122"/>
+        <location filename="Player.cpp" line="151"/>
         <source>Default</source>
         <translation type="unfinished"></translation>
     </message>
@@ -81,13 +81,13 @@
     </message>
     <message>
         <location filename="Player.ui" line="469"/>
-        <location filename="Player.cpp" line="134"/>
+        <location filename="Player.cpp" line="163"/>
         <source>Repeat track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="Player.ui" line="474"/>
-        <location filename="Player.cpp" line="138"/>
+        <location filename="Player.cpp" line="167"/>
         <source>Shuffle repeat</source>
         <translation type="unfinished"></translation>
     </message>
@@ -107,308 +107,334 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="42"/>
+        <location filename="Player.cpp" line="71"/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="48"/>
+        <location filename="Player.cpp" line="77"/>
         <source>&amp;Add file...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="52"/>
+        <location filename="Player.cpp" line="81"/>
         <source>Add &amp;folder...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="56"/>
+        <location filename="Player.cpp" line="85"/>
         <source>Add &amp;location...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="61"/>
+        <location filename="Player.cpp" line="90"/>
         <source>New &amp;playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="65"/>
+        <location filename="Player.cpp" line="94"/>
         <source>Op&amp;en playlist...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="69"/>
+        <location filename="Player.cpp" line="98"/>
         <source>S&amp;ave playlist...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="74"/>
+        <location filename="Player.cpp" line="103"/>
         <source>&amp;Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="77"/>
+        <location filename="Player.cpp" line="106"/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="78"/>
+        <location filename="Player.cpp" line="107"/>
         <source>&amp;Clear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="82"/>
+        <location filename="Player.cpp" line="111"/>
         <source>Select &amp;all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="86"/>
+        <location filename="Player.cpp" line="115"/>
         <source>&amp;Search...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="91"/>
+        <location filename="Player.cpp" line="120"/>
         <source>Remove d&amp;uplicates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="94"/>
+        <location filename="Player.cpp" line="123"/>
         <source>Remove dead items</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="98"/>
+        <location filename="Player.cpp" line="127"/>
         <source>&amp;Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="106"/>
+        <location filename="Player.cpp" line="135"/>
         <source>&amp;Playback</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="107"/>
+        <location filename="Player.cpp" line="136"/>
         <source>&amp;Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="111"/>
+        <location filename="Player.cpp" line="140"/>
         <source>Pre&amp;v</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="115"/>
+        <location filename="Player.cpp" line="144"/>
         <source>&amp;Play/Pause</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="120"/>
+        <location filename="Player.cpp" line="149"/>
         <source>Playback order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="126"/>
+        <location filename="Player.cpp" line="155"/>
         <source>Repeat all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="130"/>
+        <location filename="Player.cpp" line="159"/>
         <source>Play single track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="144"/>
+        <location filename="Player.cpp" line="173"/>
         <source>Stop after current</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="148"/>
+        <location filename="Player.cpp" line="177"/>
         <source>Cursor follows playback</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="151"/>
+        <location filename="Player.cpp" line="180"/>
         <source>Playback follows cursor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="156"/>
+        <location filename="Player.cpp" line="185"/>
         <source>&amp;Library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="157"/>
+        <location filename="Player.cpp" line="186"/>
         <source>Clear library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="160"/>
+        <location filename="Player.cpp" line="189"/>
         <source>Rebuild library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="163"/>
+        <location filename="Player.cpp" line="192"/>
         <source>Update library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="166"/>
+        <location filename="Player.cpp" line="195"/>
         <source>La&amp;nguages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="181"/>
+        <location filename="Player.cpp" line="210"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="182"/>
+        <location filename="Player.cpp" line="211"/>
         <source>&amp;About...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="185"/>
+        <location filename="Player.cpp" line="214"/>
         <source>&amp;Index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="572"/>
+        <location filename="Player.cpp" line="252"/>
+        <source>Critical error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Player.cpp" line="252"/>
+        <source>Default playlist can&apos;t be retrieved. This is a bug. Please contact the developer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Player.cpp" line="351"/>
+        <source>New playlist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Player.cpp" line="561"/>
+        <source>File(s) to add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Player.cpp" line="576"/>
+        <source>Add folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Player.cpp" line="601"/>
+        <source>Playlist name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Player.cpp" line="601"/>
+        <location filename="Player.cpp" line="759"/>
+        <source>New playlist name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Player.cpp" line="690"/>
         <source>Reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="634"/>
+        <location filename="Player.cpp" line="759"/>
+        <source>Rename this playlist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="Player.cpp" line="776"/>
         <source>Close active playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="640"/>
+        <location filename="Player.cpp" line="782"/>
         <source>Rename active playlist</source>
         <comment>Option to rename playlist tab</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="689"/>
+        <location filename="Player.cpp" line="851"/>
         <source>Play this</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="696"/>
+        <location filename="Player.cpp" line="858"/>
         <source>Edit single track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="702"/>
+        <location filename="Player.cpp" line="864"/>
         <source>Edit selected tracks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="709"/>
+        <location filename="Player.cpp" line="871"/>
         <source>Remove track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="715"/>
+        <location filename="Player.cpp" line="877"/>
         <source>Remove selected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Player.cpp" line="215"/>
-        <source>Critical error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Player.cpp" line="215"/>
-        <source>Default playlist can&apos;t be retrieved. This is a bug. Please contact the developer.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Player.cpp" line="301"/>
-        <source>New playlist</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Player.cpp" line="471"/>
-        <source>File(s) to add</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Player.cpp" line="480"/>
-        <source>Add folder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Player.cpp" line="498"/>
-        <source>Playlist name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Player.cpp" line="498"/>
-        <location filename="Player.cpp" line="621"/>
-        <source>New playlist name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="Player.cpp" line="621"/>
-        <source>Rename this playlist</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>PlaylistManager</name>
     <message>
-        <location filename="PlaylistManager.cpp" line="46"/>
-        <source>Title</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PlaylistManager.cpp" line="46"/>
-        <source>Artist</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PlaylistManager.cpp" line="46"/>
-        <source>Duration</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PlaylistManager.cpp" line="46"/>
-        <source>Genre</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PlaylistManager.cpp" line="46"/>
-        <source>Comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PlaylistManager.cpp" line="46"/>
-        <source>Album</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PlaylistManager.cpp" line="46"/>
-        <source>Track</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PlaylistManager.cpp" line="46"/>
+        <location filename="PlaylistManager.cpp" line="107"/>
         <source>Playing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PlaylistManager.cpp" line="47"/>
+        <location filename="PlaylistManager.cpp" line="107"/>
+        <source>Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PlaylistManager.cpp" line="107"/>
+        <source>Artist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PlaylistManager.cpp" line="107"/>
+        <source>Duration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PlaylistManager.cpp" line="107"/>
+        <source>Genre</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PlaylistManager.cpp" line="107"/>
+        <source>Comment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PlaylistManager.cpp" line="107"/>
+        <source>Album</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PlaylistManager.cpp" line="107"/>
+        <source>Track</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PlaylistManager.cpp" line="108"/>
         <source>Date</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PlaylistManager.cpp" line="47"/>
+        <location filename="PlaylistManager.cpp" line="108"/>
         <source>File path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PlaylistManager.cpp" line="256"/>
+        <location filename="PlaylistManager.cpp" line="268"/>
+        <source>File access error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PlaylistManager.cpp" line="256"/>
+        <source>Can&apos;t open file %1 for writing. Program will work but playlsits will not save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PlaylistManager.cpp" line="268"/>
+        <source>Playlist database file %1 can&apos;t be open for reading. Playlists will not be saved.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>PrefsDialog</name>
+    <message>
+        <location filename="PrefsDialog.ui" line="20"/>
+        <source>Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PrefsDialog.ui" line="42"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <location filename="PrefsDialog.ui" line="61"/>
         <source>General settings</source>
@@ -435,23 +461,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PrefsDialog.ui" line="141"/>
-        <source>&gt;&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PrefsDialog.ui" line="158"/>
-        <source>&lt;&lt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="PrefsDialog.ui" line="117"/>
         <source>Available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="PrefsDialog.ui" line="20"/>
-        <source>Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -460,8 +471,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="PrefsDialog.ui" line="42"/>
-        <source>Close</source>
+        <location filename="PrefsDialog.ui" line="141"/>
+        <source>&gt;&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="PrefsDialog.ui" line="158"/>
+        <source>&lt;&lt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

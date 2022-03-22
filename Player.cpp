@@ -54,6 +54,9 @@ Player::Player(QWidget *parent)
     connect(ui->playlistView->tabBar(),&QTabBar::customContextMenuRequested,this,&Player::tabBarContextMenuRequested);
     setupPlayer();
     setupFileView();
+    setWindowTitle(QCoreApplication::applicationName());
+    setWindowIcon(QIcon(":/img/pap-small.png"));
+    setWindowIconText(QCoreApplication::applicationName());
 }
 
 Player::~Player()

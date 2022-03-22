@@ -32,6 +32,7 @@
 #include <QStandardItemModel>
 #include <QFile>
 #include <QDir>
+#include <QMessageBox>
 
 #include "VMedia.h"
 

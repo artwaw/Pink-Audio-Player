@@ -252,7 +252,10 @@ void PlaylistManager::initPlaylists() {
     QFile file(fpath.absolutePath()+"/"+dataFile);
     QDataStream stream;
     if (!file.exists()) {
-        Q_ASSERT(file.open(QIODevice::WriteOnly));
+        if (!file.open(QIODevice::WriteOnly)) {
+            QMessageBox::critical(nullptr,tr("File access error"),tr("Can't open file %1 for writing. Program will work but playlsits will not save.").arg(file.fileName()));
+            return;
+        }
         stream.setDevice(&file);
         stream.setVersion(QDataStream::Qt_6_2);
         stream << QString("Live view");
@@ -261,7 +264,10 @@ void PlaylistManager::initPlaylists() {
         file.close();
     }
     live = new QStandardItemModel(this);
-    Q_ASSERT(file.open(QIODevice::ReadOnly));
+    if (!file.open(QIODevice::ReadOnly)) {
+        QMessageBox::critical(nullptr,tr("File access error"),tr("Playlist database file %1 can't be open for reading. Playlists will not be saved.").arg(file.fileName()));
+        return;
+    }
     stream.setDevice(&file);
     stream.setVersion(QDataStream::Qt_6_2);
     stream >> liveTitle;

@@ -13,5 +13,7 @@
         <file>img/stop-512.png</file>
         <file>img/volume-up-4-512.png</file>
         <file>img/mute-2-512.png</file>
+        <file>img/pap-small.png</file>
+        <file>img/pap.png</file>
     </qresource>
 </RCC>

@@ -575,15 +575,12 @@ void Player::doAddFile() {
 void Player::doAddDir() {
     QString folder = QFileDialog::getExistingDirectory(this,tr("Add folder"),QStandardPaths::standardLocations(QStandardPaths::HomeLocation).at(0));
     if (folder.isEmpty()) { return; }
-    QDir dir(folder);
-    QFileInfoList infos = dir.entryInfoList(extensions,QDir::Files|QDir::NoDotAndDotDot|QDir::Readable);
     QStringList files;
-    for (auto x=0;x<infos.size();++x) {
-        files.append(infos.at(x).absoluteFilePath());
+    QDirIterator iterator(folder,extensions,QDir::NoDotAndDotDot|QDir::Files|QDir::Readable,QDirIterator::Subdirectories);
+    while (iterator.hasNext()) {
+        files.append(iterator.next());
     }
-    if (!files.isEmpty()) {
-        playlists.addEntriesToPlaylist(files,currentPName());
-    }
+    playlists.addEntriesToPlaylist(files,currentPName());
 }
 
 /*!

@@ -297,59 +297,59 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="601"/>
+        <location filename="Player.cpp" line="598"/>
         <source>Playlist name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="601"/>
-        <location filename="Player.cpp" line="759"/>
+        <location filename="Player.cpp" line="598"/>
+        <location filename="Player.cpp" line="756"/>
         <source>New playlist name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="690"/>
+        <location filename="Player.cpp" line="687"/>
         <source>Reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="759"/>
+        <location filename="Player.cpp" line="756"/>
         <source>Rename this playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="776"/>
+        <location filename="Player.cpp" line="773"/>
         <source>Close active playlist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="782"/>
+        <location filename="Player.cpp" line="779"/>
         <source>Rename active playlist</source>
         <comment>Option to rename playlist tab</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="851"/>
+        <location filename="Player.cpp" line="848"/>
         <source>Play this</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="858"/>
+        <location filename="Player.cpp" line="855"/>
         <source>Edit single track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="864"/>
+        <location filename="Player.cpp" line="861"/>
         <source>Edit selected tracks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="871"/>
+        <location filename="Player.cpp" line="868"/>
         <source>Remove track</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="Player.cpp" line="877"/>
+        <location filename="Player.cpp" line="874"/>
         <source>Remove selected</source>
         <translation type="unfinished"></translation>
     </message>

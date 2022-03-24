@@ -37,6 +37,7 @@
 #include <QRandomGenerator>
 #include <QFileSystemModel>
 #include <QMediaFormat>
+#include <QClipboard>
 
 #include "PlaylistManager.h"
 #include "PlayingDelegate.h"
@@ -113,6 +114,7 @@ private:
     QMenu *columnContextMenu; //! Context menu for playlist columns visibility selection
     QMenu *tabBarContextMenu; //! Context menu for adding/renaming/etc of playlists
     QMenu *playlistContextMenu; //! Context menu for manipulating items in the playlist
+    QMenu *trackInfoMenu; //! Context menu for track info frame
 
     QTranslator qtTranslator; //! Translator for Qt parts
     QTranslator myTranslator; //! Translator for custom parts
@@ -168,6 +170,7 @@ private slots:
     void playThisTrack(const QModelIndex &idx);
     void editTags(const QModelIndex &idx);
     void editMultipleTracks(const QModelIndexList &idxs);
+    void trackInfoContextMenuRequested(const QPoint &point);
 
 protected:
     void closeEvent(QCloseEvent *event) override;

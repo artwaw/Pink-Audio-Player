@@ -52,6 +52,7 @@ Player::Player(QWidget *parent)
     restorePlaylists();
     ui->playlistView->tabBar()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->playlistView->tabBar(),&QTabBar::customContextMenuRequested,this,&Player::tabBarContextMenuRequested);
+    connect(ui->metaFrame,&QFrame::customContextMenuRequested,this,&Player::trackInfoContextMenuRequested);
     setupPlayer();
     setupFileView();
     setWindowTitle(QCoreApplication::applicationName());
@@ -218,6 +219,7 @@ void Player::initActions() {
     columnContextMenu = new QMenu(this);
     tabBarContextMenu = new QMenu(this);
     playlistContextMenu = new QMenu(this);
+    trackInfoMenu = new QMenu(this);
 }
 
 /*!
@@ -909,6 +911,22 @@ void Player::editTags(const QModelIndex &idx) {Q_UNUSED(idx)}
 void Player::editMultipleTracks(const QModelIndexList &idxs) {Q_UNUSED(idxs)}
 
 /*!
+ * \brief Pops up the context menu for the trackinfo.
+ * \param point Coordinates of the coursor within the metaFrame view.
+ */
+void Player::trackInfoContextMenuRequested(const QPoint &point) {
+    trackInfoMenu->clear();
+    QAction *trackInfo = new QAction(tr("Copy to clipboard"),this);
+    trackInfo->setEnabled(player.hasAudio());
+    connect(trackInfo,&QAction::triggered,this,[=](){
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(ui->artistLabel->text()+" \""+ui->titleLabel->text()+"\"");
+    });
+    trackInfoMenu->addAction(trackInfo);
+    trackInfoMenu->popup(ui->metaFrame->mapToGlobal(point));
+}
+
+/*!
  * \brief Routine called when exiting the program. Saves the program state (and exisitng playlists).
  * \param event QCloseEvent object pointer for the event.
  */
@@ -920,6 +938,7 @@ void Player::closeEvent(QCloseEvent *event) {
     settings.setValue("splitter",ui->splitter->saveState());
     writePlaylistNames();
 }
+
 
 /*!
  * \brief Language change event handler.

@@ -40,6 +40,7 @@ PlaylistManager::PlaylistManager(QObject *parent) : QObject(parent)
 void PlaylistManager::addNew(const QString &aname) {
     if (aname.isEmpty()) { return; }
     QStandardItemModel *proxy = new QStandardItemModel(0,10,this);
+    proxy->setHorizontalHeaderLabels(getColumnNames());
     mPlaylists.insert(uniqueName(aname),proxy);
 }
 
@@ -176,11 +177,47 @@ QString PlaylistManager::getLiveTitle() const {
  * Internally, QDataStream is used to read from the binary file. Stream versioning is used
  * as a means to introduce changes between the versions.
  * The file is closed once the write is done.
+ *
+ * Structure described in PlaylistManager::initPlaylists()
  * \sa PlaylistManager::initPlaylists()
- * \todo Write it ;)
  */
 void PlaylistManager::sync() {
-    //
+    QDir fpath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
+    if (!fpath.exists()) {
+        fpath.mkpath(fpath.absolutePath());
+    }
+    QFile file(fpath.absolutePath()+"/"+dataFile);
+    if (!file.open(QIODevice::WriteOnly)) {
+        QMessageBox::critical(nullptr,tr("File access error"),tr("Can't open %1 for writing, playlists will not be stored.").arg(fpath.absolutePath()+"/"+dataFile));
+        return;
+    }
+    QDataStream stream(&file);
+    stream.setVersion(QDataStream::Qt_6_2);
+    stream << liveTitle;
+    QStringList items;
+    for (auto x=0;x<live->rowCount();++x) {
+        items.append(live->item(x,9)->text());
+    }
+    qDebug() << liveTitle << items.size();
+    stream << items;
+    stream << (qint32)mPlaylists.size();
+    qDebug() << mPlaylists.size();
+    if (mPlaylists.size()>0) {
+        for (QHash<QString,QStandardItemModel*>::ConstIterator it = mPlaylists.constBegin();it!=mPlaylists.constEnd();++it) {
+            stream << it.key();
+            items.clear();
+            //stream << it.value()->rowCount();
+            if (it.value()->rowCount()>0) {
+                for (auto x=0;x<it.value()->rowCount();++x) {
+                    items.append(it.value()->item(x,9)->text());
+                }
+            }
+            stream << items;
+            qDebug() << it.key() << items.size();
+        }
+    }
+    file.flush();
+    file.close();
 }
 
 /*!
@@ -241,8 +278,18 @@ void PlaylistManager::setupHeaders() {
  * as a means to introduce changes between the versions.
  * The file is closed once the read is done.
  *
+ * Structure:
+ * - version from QDataStream::version
+ * - liveView tab title
+ * - liveView tab item count
+ * - other playlist count
+ * - loop:
+ *   - playlista/tab title
+ *   - item count
+ *   loop:
+ *     - item path
+ *
  * \sa PlaylsitManager::sync()
- * \todo Remove Q_ASSERT, make error checking.
  */
 void PlaylistManager::initPlaylists() {
     QDir fpath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
@@ -259,8 +306,8 @@ void PlaylistManager::initPlaylists() {
         stream.setDevice(&file);
         stream.setVersion(QDataStream::Qt_6_2);
         stream << QString("Live view");
-        stream << 0;
-        stream << 0;
+        stream << QStringList();
+        stream << (qint32)0;
         file.close();
     }
     live = new QStandardItemModel(this);
@@ -271,23 +318,23 @@ void PlaylistManager::initPlaylists() {
     stream.setDevice(&file);
     stream.setVersion(QDataStream::Qt_6_2);
     stream >> liveTitle;
-    int liveCount;
-    stream >> liveCount;
     QStringList items;
-    if (liveCount>0) {
-        stream >> items;
+    stream >> items;
+    if (items.size()>0) {
         addEntriesToPlaylist(items);
     }
-    int all;
+    qDebug() << liveTitle << items.size();
+    qint32 all;
     stream >> all;
-    if (all>0) {
-        QString title;
-        for (auto x=0;x<all;++x) {
-            stream >> title;
-            stream >> items;
-            addNew(title);
-            addEntriesToPlaylist(items,title);
-        }
+    qDebug() << all;
+    QString title;
+    for (auto x=0;x<all;++x) {
+        stream >> title;
+        addNew(title);
+        items.clear();
+        stream >> items;
+        addEntriesToPlaylist(items);
+        qDebug() << title << items.size();
     }
     file.close();
 }

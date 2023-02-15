@@ -553,6 +553,7 @@ void Player::doFileOpen() {
     playlists.clearPlaylist(pname);
     playlists.addEntryToPlaylist(file,pname);
     playNextTrack(nextTrack());
+    playlists.sync();
 }
 
 /*!
@@ -566,6 +567,7 @@ void Player::doAddFile() {
     for (auto x=0;x<files.size();++x) {
         playlists.addEntryToPlaylist(files.at(x),pname);
     }
+    playlists.sync();
 }
 
 /*!
@@ -583,6 +585,7 @@ void Player::doAddDir() {
         files.append(iterator.next());
     }
     playlists.addEntriesToPlaylist(files,currentPName());
+    playlists.sync();
 }
 
 /*!
@@ -736,6 +739,7 @@ void Player::playlistCloseRequested(int index) {
         playlists.remove(ui->playlistView->tabBar()->tabText(index));
         ui->playlistView->removeTab(index);
         writePlaylistNames();
+        playlists.sync();
     }
 }
 
